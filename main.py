@@ -1,9 +1,9 @@
 import argparse
 import dropbox
+from flask import Flask
 from settings import DROPBOX_KEY
 
-# dbx = dropbox.Dropbox(DROPBOX_KEY)
-# dbx.users_get_current_account()
+app = Flask(__name__)
 
 class TransferData:
     def __init__(self, dropbox_key):
@@ -17,10 +17,9 @@ class TransferData:
             print "Uploading File to " + file_to
             dbx.files_upload(f.read(), file_to)
 
-print "DROPBOX KEY", DROPBOX_KEY
-
-def main():
-    uploadVideo = TransferData(DROPBOX_KEY)
+@app.route("/upload_video")
+def upload_video_to_dropbox():
+    videoUploader = TransferData(DROPBOX_KEY)
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--source', help="file source")
     parser.add_argument('--destination', help="file destination")
@@ -32,10 +31,13 @@ def main():
     file_from = args[0]
     file_to = args[1]
 
-    uploadVideo.upload_file(file_from, file_to)
+    videoUploader.upload_file(file_from, file_to)
+
+
+# print "DROPBOX KEY", DROPBOX_KEY
 
 if __name__ == '__main__':
-    main()
+    app.run()
 
 ## script has to download youtube
 
